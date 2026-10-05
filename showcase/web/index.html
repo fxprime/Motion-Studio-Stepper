@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ModuleMore · Motion Studio</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <header>
+    <a class="brand" href="/"><img src="assets/modulemore-logo.png" alt="ModuleMore"><span>Motion Studio<small>PD42S1 PRODUCT SHOWCASE</small></span></a>
+    <div class="header-actions"><span id="connectionBadge" class="badge">Disconnected</span><button id="stop" class="stop">■ Stop & disable</button></div>
+  </header>
+  <main>
+    <section class="intro"><div><p class="eyebrow">SMALL DRIVER. PRECISE MOTION.</p><h1>Put motion in your hands.</h1><p class="subtitle">Choose a mode, set a target, and watch the motor respond.</p></div><div class="product-tag"><b>PD42S1</b><span>Closed-loop stepper controller</span><small id="previewLabel">LIVE HARDWARE</small></div></section>
+    <section class="connection panel" aria-label="Connection settings">
+      <label>Connection<select id="interface"><option value="usb">USB</option><option value="ttl">TTL UART</option><option value="rs485">RS485</option></select></label>
+      <label class="port-label">Controller<select id="port"><option value="">Looking for devices…</option></select></label>
+      <label>Baud<select id="baud"><option>115200</option><option>230400</option><option>460800</option><option>921600</option></select></label>
+      <label id="addressLabel" hidden>Address<input id="address" type="number" min="1" max="255" value="1"></label>
+      <button id="refresh" aria-label="Refresh devices">↻</button><button id="connect" class="primary">Connect controller</button>
+    </section>
+    <div id="notice" role="status" aria-live="polite">Connect a controller to start. Each test automatically stops and disables output.</div>
+    <section class="workspace">
+      <div class="control-column">
+        <div class="section-title"><h2>Try a movement</h2><span>01 / CONTROL</span></div>
+        <div class="mode-cards" role="group" aria-label="Motion mode">
+          <button class="mode-card selected" data-mode="velocity" aria-pressed="true"><span class="mode-icon">↗</span><b>Velocity</b><small>Hold a steady speed</small></button>
+          <button class="mode-card" data-mode="torque" aria-pressed="false"><span class="mode-icon">↻</span><b>Torque</b><small>Feel the driving force</small></button>
+          <button class="mode-card" data-mode="position" aria-pressed="false"><span class="mode-icon">◎</span><b>Position</b><small>Move to a precise point</small></button>
+        </div>
+        <article class="panel controls">
+          <div class="control-heading"><div><p class="eyebrow" id="modeEyebrow">VELOCITY CONTROL</p><h3 id="modeTitle">Find your rhythm.</h3></div><span class="number-mark" id="modeNumber">01</span></div>
+          <p id="modeHelp" class="muted">Set a signed speed. Negative values reverse the direction.</p>
+          <div id="velocityFields"><label>Target speed <span>RPM</span><input id="velocityRpm" type="number" min="-6000" max="6000" step="0.1" value="30"></label><div class="presets" aria-label="Speed presets"><button data-speed="10">10 RPM</button><button data-speed="30">30 RPM</button><button data-speed="60">60 RPM</button><button id="reverse">Reverse</button></div></div>
+          <div id="torqueFields" hidden><label>Target current <span>mA</span><input id="torqueCurrent" type="number" min="-3000" max="3000" value="150"></label><p class="muted">Current controls torque. The actual force depends on your motor. Negative current reverses the direction.</p></div>
+          <div id="positionFields" hidden><div class="field-grid"><label>Move type<select id="positionMode"><option value="relative">Relative distance</option><option value="absolute">Absolute position</option></select></label><label>Speed <span>RPM</span><input id="positionRpm" type="number" min="1" max="6000" value="30"></label></div><label id="positionLabel">Position <span>controller units</span><input id="position" type="number" step="1" value="6400"></label><div class="presets"><button data-distance="-6400">−⅛ turn</button><button data-distance="6400">+⅛ turn</button><button data-distance="12800">+¼ turn</button></div><p class="muted">One revolution = 51,200 controller units. Presets are relative moves.</p></div>
+          <div class="field-grid common-fields"><label>Current limit <span>mA</span><input id="limit" type="number" min="0" max="3000" value="300"></label><label>Test duration <span>seconds</span><input id="duration" type="number" min="1" max="30" value="5"></label></div>
+          <details><summary>Motion settings</summary><label>Acceleration <span>0–200</span><input id="acceleration" type="number" min="0" max="200" value="20"></label></details>
+          <button id="run" class="primary run" disabled>Start velocity test <span>→</span></button><p class="caption">Motor arms when you start. Output disables after the test.</p>
+        </article>
+      </div>
+      <div class="graph-column">
+        <div class="section-title"><h2>See the response</h2><span>02 / LIVE DATA</span></div>
+        <article class="panel graph-panel">
+          <div class="graph-heading"><div><span class="eyebrow">LIVE RESPONSE</span><h3 id="chartTitle">Velocity tracking</h3></div><span id="rate" class="badge">0 Hz</span></div>
+          <div class="chart-tabs" role="group" aria-label="Graph measurement"><button data-chart="speed" class="selected" aria-pressed="true">Velocity</button><button data-chart="current" aria-pressed="false">Current</button><button data-chart="actual_pos" aria-pressed="false">Position</button></div>
+          <canvas id="chart" aria-label="Target and measured response over time" role="img"></canvas>
+          <div class="legend"><span class="target-legend">Target</span><span class="actual-legend">Measured</span><span>Last 12 seconds</span></div>
+          <div class="graph-bottom"><span id="testState">Ready to explore</span><button id="export">Export CSV ↓</button></div>
+        </article>
+        <div class="live-metrics"><article><span>Velocity</span><b id="speed">—</b><small>RPM</small></article><article><span>Current</span><b id="current">—</b><small>mA</small></article><article><span>Bus voltage</span><b id="voltage">—</b><small>V</small></article></div>
+        <article class="panel rotor-panel"><div class="rotor" aria-hidden="true"><span id="needle"></span><i></i><small>0°</small></div><div><span class="eyebrow">ROTOR POSITION</span><h3><span id="angle">—</span>°</h3><p id="positionReadout" class="muted">Waiting for telemetry</p></div><div class="rotor-end"><span id="driverState" class="badge">Disabled</span><button id="zero" disabled>Set zero</button></div></article>
+      </div>
+    </section>
+    <section class="setup-section"><div class="section-title"><h2>Prepare the motor</h2><span>03 / SETUP</span></div><div class="setup-grid">
+      <article class="panel"><span class="eyebrow">ENCODER CALIBRATION</span><h3>A clean starting point.</h3><p class="muted">Run encoder calibration with the motor unloaded. The rotor will turn; check the controller display for completion.</p><button id="calibrate" disabled>Calibrate encoder ↗</button><button id="release" disabled>Clear stall</button></article>
+      <article class="panel"><span class="eyebrow">HOMING</span><h3>Find your reference.</h3><div class="field-grid"><label>Reference<select id="homeMethod"><option value="2">Left limit switch</option><option value="3">Right limit switch</option><option value="0">Left sensorless stop</option><option value="1">Right sensorless stop</option></select></label><label>Strategy<select id="homeStrategy"><option value="1">Nearest origin</option><option value="0">Single revolution</option><option value="2">Multi-turn zero</option></select></label><label>Direction<select id="homeDirection"><option value="0">Forward</option><option value="1">Reverse</option></select></label><label>Speed <span>RPM</span><input id="homeRpm" type="number" min="1" max="6000" value="10"></label></div><p class="muted">Uses the current limit and test duration above as homing current threshold and timeout.</p><button id="home" disabled>Start homing ↗</button></article>
+    </div></section>
+  </main>
+  <footer><span>ModuleMore <b>·</b> BE MORE CREATIVE</span><span>Created by Thanabadee Bulunseechart</span></footer>
+  <dialog id="confirmDialog"><form method="dialog"><span class="eyebrow">READY TO MOVE?</span><h2 id="confirmTitle">Start the motor</h2><p id="confirmMessage"></p><div class="dialog-actions"><button value="cancel">Cancel</button><button value="confirm" class="primary">Start test →</button></div></form></dialog>
+  <script src="app.js"></script>
+</body></html>

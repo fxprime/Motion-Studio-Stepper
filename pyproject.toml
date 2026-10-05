@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pd42s1-showcase"
+version = "0.1.0"
+description = "ModuleMore PD42S1 product demonstration console"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["pyserial>=3.5", "pd42s1-motor>=1.0.0"]
+
+[project.urls]
+Repository = "https://github.com/fxprime/Motion-Studio-Stepper"
+Documentation = "https://github.com/fxprime/Motion-Studio-Stepper#readme"
+Product = "https://www.modulemore.com/product/2932/pd42s1-foc-closed-loop-stepper-driver-rs485"
+
+[project.scripts]
+pd42s1-showcase = "showcase.server:main"
+
+[tool.setuptools]
+packages = ["showcase"]
+
+[tool.setuptools.package-data]
+showcase = ["web/*", "web/assets/*"]
